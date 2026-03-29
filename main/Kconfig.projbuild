@@ -524,6 +524,9 @@ choice BOARD_TYPE
     config BOARD_TYPE_AIPI_LITE
         bool "AIPI-Lite"
         depends on IDF_TARGET_ESP32S3
+    config BOARD_TYPE_DIYMORE_S3_ILI9341
+        bool "DIYMORE ESP32-S3 ILI9341 2.8inch (custom)"
+        depends on IDF_TARGET_ESP32S3
     config BOARD_TYPE_HU_087
         bool "HU-087"
         depends on IDF_TARGET_ESP32S3

@@ -312,7 +312,7 @@ void Application::HandleActivationDoneEvent() {
     // Release OTA object after activation is complete
     ota_.reset();
     auto& board = Board::GetInstance();
-    board.SetPowerSaveLevel(PowerSaveLevel::LOW_POWER);
+    board.SetPowerSaveLevel(PowerSaveLevel::BALANCED);
 
     Schedule([this]() {
         // Play the success sound to indicate the device is ready
@@ -510,7 +510,7 @@ void Application::InitializeProtocol() {
     });
     
     protocol_->OnAudioChannelClosed([this, &board]() {
-        board.SetPowerSaveLevel(PowerSaveLevel::LOW_POWER);
+        board.SetPowerSaveLevel(PowerSaveLevel::BALANCED);
         Schedule([this]() {
             auto display = Board::GetInstance().GetDisplay();
             display->SetChatMessage("system", "");

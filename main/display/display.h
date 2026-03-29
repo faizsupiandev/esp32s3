@@ -64,7 +64,7 @@ protected:
 class DisplayLockGuard {
 public:
     DisplayLockGuard(Display *display) : display_(display) {
-        if (!display_->Lock(30000)) {
+        if (!display_->Lock(5000)) {
             ESP_LOGE("Display", "Failed to lock display");
         }
     }

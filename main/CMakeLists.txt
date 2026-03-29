@@ -742,6 +742,11 @@ elseif(CONFIG_BOARD_TYPE_AIPI_LITE)
     set(BUILTIN_TEXT_FONT font_puhui_basic_14_1)
     set(BUILTIN_ICON_FONT font_awesome_14_1)
     set(DEFAULT_EMOJI_COLLECTION twemoji_32)
+elseif(CONFIG_BOARD_TYPE_DIYMORE_S3_ILI9341)
+    set(BOARD_TYPE "diymore-s3-ili9341")
+    set(BUILTIN_TEXT_FONT font_puhui_basic_14_1)
+    set(BUILTIN_ICON_FONT font_awesome_14_1)
+    set(DEFAULT_EMOJI_COLLECTION twemoji_32)
 elseif(CONFIG_BOARD_TYPE_HU_087)
     set(BOARD_TYPE "hu-087")
     set(BUILTIN_TEXT_FONT font_puhui_basic_14_1)
@@ -760,6 +765,11 @@ else()
     )
 endif()
 list(APPEND SOURCES ${BOARD_SOURCES})
+
+if(CONFIG_BOARD_TYPE_DIYMORE_S3_ILI9341)
+    list(APPEND SOURCES "boards/diymore-s3-ili9341/diymore-s3-ili9341.cc")
+    list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/boards/diymore-s3-ili9341)
+endif()
 
 # Select audio processor according to Kconfig
 if(CONFIG_USE_AUDIO_PROCESSOR)
@@ -946,6 +956,13 @@ target_compile_definitions(${COMPONENT_LIB}
                     PRIVATE BOARD_TYPE=\"${BOARD_TYPE}\" BOARD_NAME=\"${BOARD_NAME}\"
                     PRIVATE BUILTIN_TEXT_FONT=${BUILTIN_TEXT_FONT} BUILTIN_ICON_FONT=${BUILTIN_ICON_FONT}
                     )
+
+if(CONFIG_BOARD_TYPE_DIYMORE_S3_ILI9341)
+    target_link_libraries(${COMPONENT_LIB} PRIVATE
+        idf::espressif__esp_lcd_ili9341
+        idf::espressif__esp_lcd_touch_ft5x06
+    )
+endif()
 
 # Add generation rules
 add_custom_command(
