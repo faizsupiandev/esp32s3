@@ -38,4 +38,15 @@ public:
     int Read(int16_t* dest, int samples);
 };
 
+// Speaker-only codec: I2S TX output, no microphone input.
+// Use when hardware has an analog mic (ADC) or no mic at all.
+// Read() returns 0 samples so AFE is never fed → no ringbuffer overflow.
+class NoAudioCodecSpkOnly : public NoAudioCodec {
+public:
+    NoAudioCodecSpkOnly(int output_sample_rate, gpio_num_t spk_bclk, gpio_num_t spk_ws, gpio_num_t spk_dout);
+protected:
+    int Read(int16_t* dest, int samples) override { return 0; }
+    void EnableInput(bool enable) override {}
+};
+
 #endif // _NO_AUDIO_CODEC_H

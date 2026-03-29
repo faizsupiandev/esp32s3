@@ -224,29 +224,23 @@ class DiyMoreS3Board : public WifiBoard {
     }
 
     /**
-     * Audio codec — no external chip.
+     * Audio codec — speaker only, no digital microphone.
      *
-     * NoAudioCodecSimplex uses:
-     *   I2S port 0 → speaker (tx)
-     *   I2S port 1 → microphone (rx)
+     * Hardware has an analog mic (LMA2718 via ADC), not a digital I2S mic.
+     * NoAudioCodecSpkOnly initialises only I2S port 0 for the speaker (TX).
+     * Read() returns 0 samples → AFE is never fed → no ringbuffer overflow.
      *
-     * Both run at 16 kHz to match Xiaozhi AFE expectations and avoid
-     * the "AFE(FEED) ringbuffer full" errors seen with AIPI-Lite's 24 kHz.
-     *
-     * If your microphone is a PDM type (only 2 wires: CLK + DATA, no WS),
-     * replace NoAudioCodecSimplex with NoAudioCodecSimplexPdm and remove
-     * AUDIO_I2S_MIC_GPIO_WS from the constructor call.
+     * To add mic support later:
+     *   - If you wire a digital I2S mic: switch back to NoAudioCodecSimplex
+     *     and set AUDIO_I2S_MIC_GPIO_* pins in config.h.
+     *   - If you wire a PDM mic: use NoAudioCodecSimplexPdm.
      */
     virtual AudioCodec* GetAudioCodec() override {
-        static NoAudioCodecSimplex audio_codec(
-            AUDIO_INPUT_SAMPLE_RATE,    // 16000
+        static NoAudioCodecSpkOnly audio_codec(
             AUDIO_OUTPUT_SAMPLE_RATE,   // 16000
             AUDIO_I2S_SPK_GPIO_BCLK,   // GPIO15
             AUDIO_I2S_SPK_GPIO_WS,     // GPIO16
-            AUDIO_I2S_SPK_GPIO_DOUT,   // GPIO7
-            AUDIO_I2S_MIC_GPIO_SCK,    // GPIO5
-            AUDIO_I2S_MIC_GPIO_WS,     // GPIO4
-            AUDIO_I2S_MIC_GPIO_DIN);   // GPIO6
+            AUDIO_I2S_SPK_GPIO_DOUT);  // GPIO7
         return &audio_codec;
     }
 
